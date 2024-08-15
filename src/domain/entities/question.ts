@@ -51,10 +51,7 @@ export class Question extends Entity<QuestionProps> {
 
   // GETTER para retornar o valor da propriedade content e limita-o a 120 caracteres
   get excerpt() {
-    return this.content
-      .substring(0, 120)
-      .trimEnd()
-      .concat('...')
+    return this.content.substring(0, 120).trimEnd().concat('...')
   }
 
   // Método privado para alterar o valor da propriedade updatedAt
@@ -84,13 +81,16 @@ export class Question extends Entity<QuestionProps> {
 
   static create(
     props: Optional<QuestionProps, 'slug' | 'createdAt'>,
-    id?: UniqueEntityID
+    id?: UniqueEntityID,
   ) {
-    const question = new Question({
-      ...props,
-      slug: props.slug ?? Slug.createFromText(props.title),
-      createdAt: new Date(),
-    }, id)
+    const question = new Question(
+      {
+        ...props,
+        slug: props.slug ?? Slug.createFromText(props.title),
+        createdAt: new Date(),
+      },
+      id,
+    )
 
     return question
   }
