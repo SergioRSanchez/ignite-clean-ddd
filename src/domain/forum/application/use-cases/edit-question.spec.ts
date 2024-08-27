@@ -2,6 +2,8 @@ import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questio
 import { makeQuestion } from 'test/factories/make-question'
 import { EditQuestionUseCase } from './edit-question'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { NotAllowedError } from './errors/not-allowed-error'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let sut: EditQuestionUseCase
@@ -45,14 +47,15 @@ describe('Edit Question', () => {
 
     await inMemoryQuestionsRepository.create(newQuestion)
 
-    expect(() => {
-      return sut.execute({
-        authorId: 'author-2',
-        questionId: newQuestion.id.toString(),
-        title: 'new title',
-        content: 'new content',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-2',
+      questionId: newQuestion.id.toString(),
+      title: 'new title',
+      content: 'new content',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('should not be able to edit a question that not exists', async () => {
@@ -65,13 +68,14 @@ describe('Edit Question', () => {
 
     await inMemoryQuestionsRepository.create(newQuestion)
 
-    expect(() => {
-      return sut.execute({
-        authorId: 'author-1',
-        questionId: 'question-2',
-        title: 'new title',
-        content: 'new content',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-1',
+      questionId: 'question-2',
+      title: 'new title',
+      content: 'new content',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 })
