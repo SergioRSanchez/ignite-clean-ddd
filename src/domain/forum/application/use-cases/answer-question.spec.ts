@@ -14,6 +14,7 @@ describe('Answer Question', () => {
     inMemoryAnswersRepository = new InMemoryAnswersRepository(
       inMemoryAnswerAttachmentsRepository,
     )
+
     sut = new AnswerQuestionUseCase(inMemoryAnswersRepository)
   })
 

@@ -17,6 +17,7 @@ describe('Delete Question', () => {
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
     )
+
     sut = new DeleteQuestionUseCase(inMemoryQuestionsRepository)
   })
 
